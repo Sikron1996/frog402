@@ -20,23 +20,22 @@ module.exports = (req, res) => {
         symbol: "USDC",
         decimals: 6,
         amount: "1000000",
-        maxAmountRequired: 1,       // <- integer, не string/boolean
+        maxAmountRequired: "true", // <-- string, не число
         description: "Pay 1 USDC on Base to mint x402frogs collectible",
         mimeType: "application/vnd.x402+json",
-        payTo: [
-          {
-            address: "0x1DEf6d9E7ba7256dF17d01Bf7D8FA62d82A27Fc4",
-            chain: "base",
-            amount: "1000000"
-          }
-        ],
+        payTo: {
+          address: "0x1DEf6d9E7ba7256dF17d01Bf7D8FA62d82A27Fc4",
+          chain: "base"
+        }, // <-- об’єкт, не масив
         maxTimeoutSeconds: 600
       }
     ],
     metadata: {
       name: "x402frogs #" + (id || "1"),
-      description: "Mint x402frogs collectible for 1 USDC (via Coinbase Facilitator)",
-      image: "https://ipfs.io/ipfs/QmepBFK4YT8KwB4GNg3pwBdtDJy8kr8RtPgURTBdqt8fV8/1.png"
+      description:
+        "Mint x402frogs collectible for 1 USDC (via Coinbase Facilitator)",
+      image:
+        "https://ipfs.io/ipfs/QmepBFK4YT8KwB4GNg3pwBdtDJy8kr8RtPgURTBdqt8fV8/1.png"
     }
   });
 };
