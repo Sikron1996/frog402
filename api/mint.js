@@ -1,12 +1,13 @@
-import crypto from "crypto";
+// pages/api/mint.js
+const crypto = require("crypto");
 
-export default function handler(req, res) {
+module.exports = (req, res) => {
   const { id } = req.query;
   const nonce = "0x" + crypto.randomBytes(16).toString("hex");
 
   res.status(402).json({
     x402Version: 1,
-    id: "offer-" + id,
+    id: "offer-" + (id || "1"),
     nonce,
     facilitator: "https://facilitator.coinbase.com/x402/confirm",
     accepts: [
@@ -19,7 +20,7 @@ export default function handler(req, res) {
         symbol: "USDC",
         decimals: 6,
         amount: "1000000",
-        maxAmountRequired: 1, // integer
+        maxAmountRequired: 1,       // <- integer, не string/boolean
         description: "Pay 1 USDC on Base to mint x402frogs collectible",
         mimeType: "application/vnd.x402+json",
         payTo: [
@@ -33,11 +34,9 @@ export default function handler(req, res) {
       }
     ],
     metadata: {
-      name: "x402frogs #" + id,
-      description:
-        "Mint x402frogs collectible for 1 USDC (via Coinbase Facilitator)",
-      image:
-        "https://ipfs.io/ipfs/QmepBFK4YT8KwB4GNg3pwBdtDJy8kr8RtPgURTBdqt8fV8/1.png"
+      name: "x402frogs #" + (id || "1"),
+      description: "Mint x402frogs collectible for 1 USDC (via Coinbase Facilitator)",
+      image: "https://ipfs.io/ipfs/QmepBFK4YT8KwB4GNg3pwBdtDJy8kr8RtPgURTBdqt8fV8/1.png"
     }
   });
-}
+};
