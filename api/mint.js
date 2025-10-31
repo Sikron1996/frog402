@@ -1,41 +1,22 @@
-// pages/api/mint.js
-const crypto = require("crypto");
-
-module.exports = (req, res) => {
-  const { id } = req.query;
-  const nonce = "0x" + crypto.randomBytes(16).toString("hex");
-
-  res.status(402).json({
-    x402Version: 1,
-    id: "offer-" + (id || "1"),
-    nonce,
-    facilitator: "https://facilitator.coinbase.com/x402/confirm",
-    accepts: [
-      {
-        scheme: "exact",
-        network: "base",
-        chain: "base",
-        resource: "erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        asset: "USDC",
-        symbol: "USDC",
-        decimals: 6,
-        amount: "1000000",
-        maxAmountRequired: "true", // <-- string, не число
-        description: "Pay 1 USDC on Base to mint x402frogs collectible",
-        mimeType: "application/vnd.x402+json",
-        payTo: {
-          address: "0x1DEf6d9E7ba7256dF17d01Bf7D8FA62d82A27Fc4",
-          chain: "base"
-        }, // <-- об’єкт, не масив
-        maxTimeoutSeconds: 600
-      }
-    ],
+require('dotenv').config();
+module.exports = async (req, res) => {
+  const publicUrl = process.env.PUBLIC_URL || `https://${req.headers.host}`;
+  const payload = {
+    version: "1",
+    type: "x402",
+    chainId: 8453,
+    payment: {
+      currency: "USDC",
+      tokenAddress: process.env.USDC_ADDRESS,
+      amount: "1",
+      receiver: process.env.TREASURY
+    },
+    resource: `${publicUrl}/api/mint?id=1`,
     metadata: {
-      name: "x402frogs #" + (id || "1"),
-      description:
-        "Mint x402frogs collectible for 1 USDC (via Coinbase Facilitator)",
-      image:
-        "https://ipfs.io/ipfs/QmepBFK4YT8KwB4GNg3pwBdtDJy8kr8RtPgURTBdqt8fV8/1.png"
+      name: "x402frogs #1",
+      description: "Mint x402frogs collectible for 1 USDC",
+      image: "https://ipfs.io/ipfs/QmepBFK4YT8KwB4GNg3pwBdtDJy8kr8RtPgURTBdqt8fV8/1.png"
     }
-  });
+  };
+  return res.status(402).json(payload);
 };
